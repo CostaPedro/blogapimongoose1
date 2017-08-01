@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 
 const {DATABASE_URL, PORT} = require('./config');
-const {BlogPost} = require('./models');
+const {Blogs} = require('./models');
 
 const app = express();
 
@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 mongoose.Promise = global.Promise;
 
 app.get('/posts', (req, res) => {
-  BlogPost
+  Blogs
     .find()
     .limit(3)
     .then(posts => {
@@ -31,7 +31,7 @@ app.get('/posts', (req, res) => {
 });
 
 app.get('/posts/:id', (req, res) => {
-  BlogPost
+  Blogs
     .findById(req.params.id)
     .exec()
     .then(post => res.json(post.apiRepr()))
@@ -52,13 +52,13 @@ app.post('/posts', (req, res) => {
     }
   }
 
-  BlogPost
+  Blogs
     .create({
       title: req.body.title,
       content: req.body.content,
       author: req.body.author
     })
-    .then(blogPost => res.status(201).json(blogPost.apiRepr()))
+    .then(blog => res.status(201).json(blog.apiRepr()))
     .catch(err => {
         console.error(err);
         res.status(500).json({error: 'error creating'});
@@ -68,7 +68,7 @@ app.post('/posts', (req, res) => {
 
 
 app.delete('/posts/:id', (req, res) => {
-  BlogPost
+  Blogs
     .findByIdAndRemove(req.params.id)
     .exec()
     .then(() => {
@@ -96,7 +96,7 @@ app.put('/posts/:id', (req, res) => {
     }
   });
 
-  BlogPost
+  Blogs
     .findByIdAndUpdate(req.params.id, {$set: updated}, {new: true})
     .exec()
     .then(updatedPost => res.status(201).json(updatedPost.apiRepr()))
@@ -105,7 +105,7 @@ app.put('/posts/:id', (req, res) => {
 
 
 app.delete('/:id', (req, res) => {
-  BlogPosts
+  Blogs
     .findByIdAndRemove(req.params.id)
     .exec()
     .then(() => {
